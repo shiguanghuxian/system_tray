@@ -13,7 +13,11 @@ class AppWindow : NSObject{
         print("showAppWindow title:\(self.window.title) rect:\(self.window.contentLayoutRect)");
         self.window.windowController?.showWindow(self)
         NSApp.activate(ignoringOtherApps:true)
-        self.window.orderFront(self)
+        if self.window.isMiniaturized {
+            self.window.deminiaturize(nil)
+        } else {
+            self.window.orderFront(self)
+        }
     }
 
     func hideAppWindow() {
