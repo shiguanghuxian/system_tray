@@ -11,9 +11,11 @@ let kMenuItemSelectedCallbackMethod = "MenuItemSelectedCallback";
 let kTitleKey = "title"
 let kIconPathKey = "iconpath"
 let kToolTipKey = "tooltip"
+let kLeftMouseShowMenuKey = "leftMouseShowMenu"
 let kIdKey = "id";
 let kTypeKey = "type";
 let kLabelKey = "label";
+let kStateKey = "state";
 let kSeparatorKey = "separator";
 let kSubMenuKey = "submenu";
 let kEnabledKey = "enabled";
@@ -76,7 +78,8 @@ public class SystemTrayPlugin: NSObject, FlutterPlugin {
       let title = arguments[kTitleKey] as? String
       let iconPath = arguments[kIconPathKey] as? String
       let toolTip = arguments[kToolTipKey] as? String
-      result(system_tray?.initSystemTray(title: title, iconPath: iconPath, toolTip: toolTip) ?? false)
+      let leftMouseShowMenu = arguments[kLeftMouseShowMenuKey] as? Bool ?? false
+      result(system_tray?.initSystemTray(title: title, iconPath: iconPath, toolTip: toolTip, leftMouseShowMenu: leftMouseShowMenu) ?? false)
   }
 
   func setSystemTrayInfo(_ call: FlutterMethodCall, _ result: FlutterResult) {
@@ -96,6 +99,7 @@ public class SystemTrayPlugin: NSObject, FlutterPlugin {
     let label = item[kLabelKey] as? String ?? ""
     let id = item[kIdKey] as? Int ?? -1
     let isEnabled = item[kEnabledKey] as? Bool ?? false
+    let state = item[kStateKey] as? Bool ?? false
 
     switch type! {
       case kSeparatorKey:
@@ -107,6 +111,7 @@ public class SystemTrayPlugin: NSObject, FlutterPlugin {
         let menuItem = NSMenuItem()
         menuItem.title = label
         menuItem.submenu = subMenu
+        menuItem.state = state ? .on : .off
         menu.addItem(menuItem)
       }
       default:
@@ -115,6 +120,7 @@ public class SystemTrayPlugin: NSObject, FlutterPlugin {
       menuItem.target = self
       menuItem.action = isEnabled ? #selector(onMenuItemSelectedCallback) : nil
       menuItem.tag = id
+      menuItem.state = state ? .on : .off
       menu.addItem(menuItem)
     }
 

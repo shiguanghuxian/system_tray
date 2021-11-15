@@ -14,9 +14,11 @@ class SystemTray : NSObject, NSMenuDelegate {
     var statusItem: NSStatusItem?
     var statusItemMenu: NSMenu?
     var channel: FlutterMethodChannel
+    var leftMouseShowMenu: Bool
 
     init(_ channel: FlutterMethodChannel) {
         self.channel = channel
+        self.leftMouseShowMenu = false
     }
 
     func menuDidClose(_ menu: NSMenu) {
@@ -28,6 +30,10 @@ class SystemTray : NSObject, NSMenuDelegate {
             switch event.type {
             case .leftMouseUp:
                 channel.invokeMethod(kSystemTrayEventCallbackMethod, arguments: kSystemTrayEventLButtnUp)
+                if leftMouseShowMenu {
+                    statusItem?.menu = statusItemMenu
+                    statusItem?.button?.performClick(nil)
+                }
             default:
                 channel.invokeMethod(kSystemTrayEventCallbackMethod, arguments: kSystemTrayEventRButtnUp)
 
@@ -37,7 +43,7 @@ class SystemTray : NSObject, NSMenuDelegate {
         }
     }
 
-    func initSystemTray(title: String?, iconPath: String?, toolTip: String?) -> Bool {
+    func initSystemTray(title: String?, iconPath: String?, toolTip: String?, leftMouseShowMenu: Bool?) -> Bool {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
         statusItem?.button?.action = #selector(onSystemTrayEventCallback(sender:))
@@ -49,6 +55,9 @@ class SystemTray : NSObject, NSMenuDelegate {
         }
         if let title = title {
             statusItem?.button?.title = title
+        }
+        if let leftMouseShowMenu = leftMouseShowMenu {
+            self.leftMouseShowMenu = leftMouseShowMenu
         }
 
         if let iconPath = iconPath {

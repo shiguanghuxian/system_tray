@@ -17,9 +17,11 @@ const String _kSystemTrayEventCallbackMethod = 'SystemTrayEventCallback';
 const String _kTitleKey = "title";
 const String _kIconPathKey = "iconpath";
 const String _kToolTipKey = "tooltip";
+const String _kLeftMouseShowMenuKey = "leftMouseShowMenu";
 const String _kIdKey = 'id';
 const String _kTypeKey = 'type';
 const String _kLabelKey = 'label';
+const String _kStateKey = 'state';
 const String _kSubMenuKey = 'submenu';
 const String _kEnabledKey = 'enabled';
 
@@ -55,6 +57,7 @@ class SystemTray {
     required String title,
     required String iconPath,
     String? toolTip,
+    bool? leftMouseShowMenu,
   }) async {
     bool value = await _platformChannel.invokeMethod(
       _kInitSystemTray,
@@ -62,6 +65,7 @@ class SystemTray {
         _kTitleKey: title,
         _kIconPathKey: _joinIconPath(iconPath),
         _kToolTipKey: toolTip,
+        _kLeftMouseShowMenuKey: leftMouseShowMenu,
       },
     );
     return value;
@@ -71,6 +75,7 @@ class SystemTray {
     String? title,
     String? iconPath,
     String? toolTip,
+    bool? leftMouseShowMenu,
   }) async {
     bool value = await _platformChannel.invokeMethod(
       _kSetSystemTrayInfo,
@@ -78,6 +83,7 @@ class SystemTray {
         _kTitleKey: title,
         _kIconPathKey: iconPath == null ? null : _joinIconPath(iconPath),
         _kToolTipKey: toolTip,
+        _kLeftMouseShowMenuKey: leftMouseShowMenu,
       },
     );
     return value;
@@ -135,6 +141,7 @@ class SystemTray {
           representation[_kIdKey] = _storeMenuCallback(handler);
         }
         representation[_kEnabledKey] = item.enabled;
+        representation[_kStateKey] = item.state;
       } else {
         throw ArgumentError(
             'Unknown MenuItemBase type: $item (${item.runtimeType})');

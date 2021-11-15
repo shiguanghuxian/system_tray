@@ -20,11 +20,14 @@ class MenuItem extends MenuItemBase {
   MenuItem({
     required String label,
     this.enabled = true,
+    this.state = false,
     this.onClicked,
   }) : super('lable', label);
 
   /// Whether or not the menu item is enabled.
   final bool enabled;
+  // Is the menu item checked state
+  final bool state;
 
   /// The callback to call whenever the menu item is selected.
   final MenuItemSelectedCallback? onClicked;
